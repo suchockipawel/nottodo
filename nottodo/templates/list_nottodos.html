@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block title %}My Not To Dos{% endblock %}
+
+{% block content %}
+<h2 class="mt-4">My Not To Dos</h2>
+<a href="{% url 'add_nottodo' %}" class="btn btn-primary mb-3">Add Not To Do</a>
+
+
+
+<!-- Context Filter Buttons -->
+<div class="btn-group mb-3" role="group" aria-label="Filter by context">
+  <a href="{% url 'list_nottodos' %}?context=All" class="btn btn-secondary {% if context_filter == 'All' %}active{% endif %}">All</a>
+  <a href="{% url 'list_nottodos' %}?context=Home" class="btn btn-secondary {% if context_filter == 'Home' %}active{% endif %}">Home</a>
+  <a href="{% url 'list_nottodos' %}?context=Work" class="btn btn-secondary {% if context_filter == 'Work' %}active{% endif %}">Work</a>
+  <a href="{% url 'list_nottodos' %}?context=Other" class="btn btn-secondary {% if context_filter == 'Other' %}active{% endif %}">Other</a>
+</div>
+
+<div id="calendar" class="mb-4"></div>
+
+<div class="card-list">
+    {% for nottodo in nottodos %}
+    <div class="card nottodo-card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">{{ nottodo.title }}</h5>
+            <p class="card-text">{{ nottodo.description }}</p>
+            <p class="card-text"><small class="text-muted">{{ nottodo.context }}</small></p>
+            <p class="card-text"><small class="text-muted">{{ nottodo.scheduled_start_time|date:"D, d M Y H:i" }} - {{ nottodo.scheduled_end_time|date:"D, d M Y H:i" }}</small></p>
+            <p class="card-text"><small class="text-muted">{{ nottodo.get_repeat_display }}</small></p>
+            <a href="{% url 'update_nottodo' nottodo.pk %}" class="btn btn-warning btn-sm">Edit</a>
+            <a href="{% url 'delete_nottodo' nottodo.pk %}" class="btn btn-danger btn-sm">Delete</a>
+            <a href="{% url 'share_nottodo' nottodo.pk %}" class="btn btn-primary btn-sm">Share</a>
+        </div>
+    </div>
+    {% empty %}
+    <p>No Not To Dos found.</p>
+    {% endfor %}
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        $('#calendar').fullCalendar({
+            events: function(start, end, timezone, callback) {
+                fetch('/nottodos/events/')
+                    .then(response => response.json())
+                    .then(data => {
+                        callback(data);
+                    })
+                    .catch(error => console.error('Error fetching user-selected events:', error));
+            },
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,agendaWeek,agendaDay'
+            },
+            editable: true,
+            selectable: true,
+            eventRender: function(event, element) {
+                // Add specific class based on event context
+                if (event.context === 'Home') {
+                    element.addClass('context-home');
+                } else if (event.context === 'Work') {
+                    element.addClass('context-work');
+                } else if (event.context === 'Other') {
+                    element.addClass('context-other');
+                }
+            },
+            viewRender: function(view) {
+                var month = view.intervalStart.month();
+                calendarEl.classList.remove('calendar-winter', 'calendar-spring', 'calendar-summer', 'calendar-autumn');
+                if (month == 11 || month == 0 || month == 1) {
+                    calendarEl.classList.add('calendar-winter');
+                } else if (month >= 2 && month <= 4) {
+                    calendarEl.classList.add('calendar-spring');
+                } else if (month >= 5 && month <= 7) {
+                    calendarEl.classList.add('calendar-summer');
+                } else if (month >= 8 && month <= 10) {
+                    calendarEl.classList.add('calendar-autumn');
+                }
+                fetchHolidays(view.start, view.end);
+            }
+        });
+        function fetchHolidays(start, end) {
+            var apiKey = 'FWtjtjyrqUlLiNe0GVP98HFvz8SteefC';
+            var country = 'DE';
+            var year = start.year();  // Ensure the year is correctly extracted
+            var url = `https://calendarific.com/api/v2/holidays?api_key=${apiKey}&country=${country}&year=${year}`;
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.response && data.response.holidays) {
+                        $('#calendar').fullCalendar('removeEvents', function(event) {
+                            return event.type === 'holiday';
+                        });
+                        var holidays = data.response.holidays.map(holiday => ({
+                            title: holiday.name,
+                            start: holiday.date.iso,
+                            backgroundColor: 'red !important',
+                            borderColor: 'red !important',
+                            textColor: 'white !important',
+                            type: 'holiday'
+                        }));
+                        $('#calendar').fullCalendar('addEventSource', holidays);
+                    }
+                })
+                .catch(error => console.error('Error fetching holidays:', error));
+        }
+    });
+  </script>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+{% endblock %}

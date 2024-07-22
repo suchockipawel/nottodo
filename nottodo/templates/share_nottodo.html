@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Share Not To Do{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="form-frame">
+            <h2 class="mt-4">Share Not To Do</h2>
+            <form method="post" class="mt-3">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Share</button>
+            </form>
+            <div class="mt-4">
+                <h4>Share via:</h4>
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ share_url }}" target="_blank" class="btn btn-primary">LinkedIn</a>
+                <a href="https://twitter.com/intent/tweet?url={{ share_url }}&text={{ share_text }}" target="_blank" class="btn btn-dark">X</a>
+                <a href="mailto:?subject={{ share_email_subject }}&body={{ share_email_body }}" target="_blank" class="btn btn-secondary">Email</a>
+                <a href="sms:?body={{ share_text }} - {{ share_url }}" target="_blank" class="btn btn-success">Text Message</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

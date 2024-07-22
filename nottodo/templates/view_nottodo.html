@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}View Not To Do{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="form-frame">
+            <h2>{{ nottodo.title }}</h2>
+            <p>{{ nottodo.description }}</p>
+            <p><strong>Context:</strong> {{ nottodo.context }}</p>
+            <p><strong>Scheduled Time:</strong> {{ nottodo.scheduled_time }}</p>
+            <p><strong>Repeat:</strong> {{ nottodo.get_repeat_display }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

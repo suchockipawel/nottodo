@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% load static %}  <!-- Add this line to load the static tag library -->
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2>Welcome to NotTODO App</h2>
+        <p>This is your home page. Navigate using the menu above.</p>
+    </div>
+</div>
+<video autoplay muted loop class="position-absolute top-0 start-50 translate-middle-x w-100 h-100" style="object-fit: cover; z-index: -1;">
+  <source src="{% static 'videos/vid.mp4' %}" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+<script src="https://sf-cdn.coze.com/obj/unpkg-va/flow-platform/chat-app-sdk/0.1.0-beta.4/libs/oversea/index.js"></script>
+<script>
+    new CozeWebSDK.WebChatClient({
+      config: {
+        bot_id: '7390779961479151622',
+      },
+      componentProps: {
+        title: 'JEPA CHAT GPT ',
+      },
+    });
+</script>
+
+{% endblock %}

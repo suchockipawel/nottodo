@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}NotToDo{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'nottodo.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMlVWJp3hbZQ2eXr7uoi8jV1IZDRVAMl3IP96xV" crossorigin="anonymous">
+
+    <!-- Include FullCalendar and jQuery -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/locale-all.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand" href="{% url 'home' %}">NotToDo</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                {% if user.is_authenticated %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ user.username }}
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{% url 'profile' %}">Profile</a>
+                        <a class="dropdown-item" href="{% url 'change_email' %}">Change Email</a>
+                        <a class="dropdown-item" href="{% url 'change_password' %}">Change Password</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'account_logout' %}">Sign Out</a>
+                    </div>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'account_login' %}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'account_signup' %}">Sign Up</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="sidebar">
+            <a href="{% url 'list_nottodos' %}">My NotToDos</a>
+            <a href="{% url 'list_shared_nottodos' %}">Shared NotToDos</a>
+        </div>
+        <div class="main-content">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <span>&copy; 2024 NotToDo App</span>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <!-- Hidden messages container -->
+    <div id="messages" style="display: none;">
+        {% if messages %}
+            {% for message in messages %}
+                <span class="message">{{ message|escapejs }}</span>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var messageContainer = document.getElementById('messages');
+        var messageElements = messageContainer.getElementsByClassName('message');
+
+        Array.prototype.forEach.call(messageElements, function(element) {
+            var message = element.textContent;
+            alert(message);
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+          // Initialize flatpickr on the date and time input fields
+          flatpickr("#id_scheduled_start_time", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            altInput: true,
+            altFormat: "F j, Y H:i",
+            time_24hr: true
+          });
+  
+          flatpickr("#id_scheduled_end_time", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            altInput: true,
+            altFormat: "F j, Y H:i",
+            time_24hr: true
+          });
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        function convertUTCToLocal(utcDate) {
+          return moment.utc(utcDate).tz('Europe/Brussels').format('YYYY-MM-DD HH:mm:ss');
+        }
+
+        // Fetch and render events from the server
+        function fetchAndRenderEvents() {
+          $.getJSON('/nottodo/events/', function(events) {
+            events.forEach(function(event) {
+              event.start = convertUTCToLocal(event.start);
+              if (event.end) {
+                event.end = convertUTCToLocal(event.end);
+              }
+              // Assuming your calendar library has a method to add events
+              $('#calendar').fullCalendar('renderEvent', event, true);
+            });
+          });
+        }
+
+        // Initialize FullCalendar
+        $('#calendar').fullCalendar({
+          header: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'month,agendaWeek,agendaDay'
+          },
+          editable: true,
+          eventLimit: true, // allow "more" link when too many events
+          events: fetchAndRenderEvents
+        });
+
+        // Fetch and render events on page load
+        fetchAndRenderEvents();
+      });
+    </script>
+</body>
+</html>

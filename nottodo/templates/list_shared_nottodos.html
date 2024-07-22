@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Shared Not To Dos{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="mt-4">Shared Not To Dos</h2>
+        <table class="table table-bordered table-striped table-hover mt-3">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Context</th>
+                    <th>Shared By</th>
+                    <th>Comments</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for shared_nottodo in shared_nottodos %}
+                <tr>
+                    <td>{{ shared_nottodo.nottodo.title }}</td>
+                    <td>{{ shared_nottodo.nottodo.description }}</td>
+                    <td>{{ shared_nottodo.nottodo.context }}</td>
+                    <td>{{ shared_nottodo.nottodo.user.username }}</td>
+                    <td>
+                        <a href="{% url 'add_comment' shared_nottodo.pk %}" class="btn btn-secondary btn-sm">Comment</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'copy_nottodo' shared_nottodo.nottodo.pk %}" class="btn btn-primary btn-sm">Copy</a>
+                        <a href="{% url 'unshare_nottodo' shared_nottodo.pk %}" class="btn btn-danger btn-sm">Unshare</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        <strong>Comments:</strong>
+                        {% if shared_nottodo.comments.all %}
+                            <ul>
+                                {% for comment in shared_nottodo.comments.all %}
+                                <li>{{ comment.user.username }}: {{ comment.text }} ({{ comment.created_at }})</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p>No comments yet.</p>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center">No Shared Not To Dos found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

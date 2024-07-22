@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Not To Do{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h2 class="mt-4">Delete Not To Do</h2>
+        <p>Are you sure you want to delete the following Not To Do?</p>
+        <ul>
+            <li><strong>Title:</strong> {{ nottodo.title }}</li>
+            <li><strong>Description:</strong> {{ nottodo.description }}</li>
+            <li><strong>Context:</strong> {{ nottodo.context }}</li>
+            <li><strong>Scheduled Time:</strong> {{ nottodo.scheduled_time }}</li>
+            <li><strong>Repeat:</strong> {{ nottodo.get_repeat_display }}</li>
+        </ul>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <a href="{% url 'list_nottodos' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

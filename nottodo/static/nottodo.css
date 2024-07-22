@@ -1,0 +1,188 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: url('/static/pics/background.jpg');
+    background-size: cover;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.5); /* Adjust transparency as needed */
+    z-index: -1; /* Ensure it stays behind all other content */
+}
+
+.navbar {
+    background-color: #0079bf;
+    color: white;
+}
+
+.navbar a.navbar-brand, .navbar a.nav-link {
+    color: white !important;
+}
+
+.container-fluid {
+    display: flex;
+    flex: 1;
+    height: 100%;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #eceff1;
+    padding-top: 20px;
+    background: rgba(255, 255, 255, 0.5); /* Adjust transparency as needed */
+}
+
+.sidebar a {
+    padding: 15px;
+    text-decoration: none;
+    font-size: 18px;
+    color: #333;
+    display: block;
+}
+
+.sidebar a:hover {
+    background-color: #ddd;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+    background-color: #fff;
+    margin: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow-y: auto; /* Make main content scrollable */
+    background: rgba(255, 255, 255, 0.5); /* Adjust transparency as needed */
+}
+
+
+
+.footer {
+    background-color: #0079bf;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+.form-frame {
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-primary {
+    background-color: #0079bf;
+    border-color: #0079bf;
+}
+
+.btn-primary:hover {
+    background-color: #005f8a;
+    border-color: #005f8a;
+}
+
+/* Additional styles to move the form content up */
+.mt-4 {
+    margin-top: 2rem !important; /* Adjust this value as needed */
+}
+
+.mt-3 {
+    margin-top: 1rem !important; /* Adjust this value as needed */
+}
+
+.row.justify-content-center {
+    margin-top: -50px; /* Move the form up */
+}
+
+#calendar {
+    max-width: 600px; /* Reduce the width */
+    height: 500px;    /* Reduce the height */
+    position: fixed;
+    top: 150px; /* Move the calendar down */
+    right: 50px; /* Move the calendar to the right */
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    z-index: 999; /* Ensure it stays above other elements */
+    background-size: cover;
+    background-position: center;
+    opacity: 0.8;
+    color: #000;  /* Make text black for better contrast */
+    font-weight: bold;  /* Make text bold for better readability */
+}
+
+.calendar-winter {
+    background-image: url('/static/pics/winter.jpg'); 
+}
+
+.calendar-spring {
+    background-image: url('/static/pics/spring.jpg');
+}
+
+.calendar-summer {
+    background-image: url('/static/pics/summer.jpg'); 
+}
+
+.calendar-autumn {
+    background-image: url('/static/pics/autumn.jpg'); 
+}
+
+/* Ensure the events text in the calendar is bold and dark */
+.fc-event, .fc-event-dot {
+    background-color: #000 !important;
+    color: #fff !important;
+    font-weight: bold !important;
+}
+
+.card-list {
+    display: block;
+    width: calc(100% - 650px); /* Adjust width to not overlap the calendar */
+    margin-right: 650px; /* Ensure there's space for the calendar */
+}
+
+.card.nottodo-card {
+    width: 100%; /* Ensure the cards use the full width of the card list */
+    margin-bottom: 1rem; /* Add margin between cards */
+}
+
+.context-home {
+    background-color: green !important;
+    border-color: green !important;
+    color: white !important;
+  }
+  
+  .context-work {
+    background-color: red !important;
+    border-color: red !important;
+    color: white !important;
+  }
+  
+  .context-other {
+    background-color: yellow !important;
+    border-color: yellow !important;
+    color: black !important;
+  }
+  
+  
+  .fc-event {
+    margin-bottom: 5px !important; /* Add space between events */
+    font-size: 12px !important;    /* Adjust font size for better readability */
+    padding: 2px !important;       /* Add padding for better appearance */
+    overflow: hidden !important;   /* Ensure text does not overflow */
+    text-overflow: ellipsis !important; /* Handle text overflow with ellipsis */
+    white-space: nowrap !important; /* Prevent text from wrapping */
+}
